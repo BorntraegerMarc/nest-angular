@@ -1,23 +1,17 @@
-import {
-  Module,
-  NestModule,
-  MiddlewareConsumer,
-  RequestMethod,
-} from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { authenticate } from 'passport';
-
-// Strategies
-import { LocalStrategy } from './passport/local.strategy';
-import { JwtStrategy } from './passport/jwt.strategy';
-import { FacebookStrategy } from './passport/facebook.strategy';
-import { TwitterStrategy } from './passport/twitter.strategy';
-import { GoogleStrategy } from './passport/google-plus.strategy';
-
 import { UserModule } from '../user/user.module';
+import { AuthController } from './auth.controller';
 import { authProviders } from './auth.providers';
 import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
 import { bodyValidatorMiddleware } from './middlewares/body-validator.middleware';
+import { FacebookStrategy } from './passport/facebook.strategy';
+import { GoogleStrategy } from './passport/google-plus.strategy';
+import { JwtStrategy } from './passport/jwt.strategy';
+// Strategies
+import { LocalStrategy } from './passport/local.strategy';
+import { OIDCStrategy } from './passport/oidc.strategy';
+import { TwitterStrategy } from './passport/twitter.strategy';
 
 @Module({
   imports: [UserModule],
@@ -28,7 +22,8 @@ import { bodyValidatorMiddleware } from './middlewares/body-validator.middleware
     JwtStrategy,
     FacebookStrategy,
     TwitterStrategy,
-    GoogleStrategy
+    GoogleStrategy,
+    OIDCStrategy
   ],
   controllers: [AuthController]
 })
@@ -59,5 +54,12 @@ export class AuthModule implements NestModule {
     consumer
       .apply(authenticate('google', { session: false }))
       .forRoutes('api/auth/google/token');
+
+    consumer
+      .apply(authenticate('oidc', { session: true }))
+      .forRoutes('api/auth/oidc/signin');
+    consumer
+      .apply(authenticate('oidc', { session: true }))
+      .forRoutes('api/auth/oidc/cb');
   }
 }

@@ -1,11 +1,11 @@
-import { Controller, Post, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
-
+import { Roles } from '../../decorators/roles.decorator';
+import { RolesGuard } from '../../guards/roles.guard';
 import { AuthService } from './auth.service';
 import { IToken } from './interfaces/token.interface';
-import { RolesGuard } from '../../guards/roles.guard';
-import { Roles } from '../../decorators/roles.decorator';
+
 
 @Controller('api/auth')
 export class AuthController {
@@ -64,6 +64,16 @@ export class AuthController {
   @Post('google/token')
   async requestJsonWebTokenAfterGoogleSignIn(@Req() req: Request): Promise<IToken> {
     return await this.authService.createToken(req.user);
+  }
+
+  @Get('oidc/signin')
+  async requestOIDCSignIn(@Req() req: Request): Promise<void> {
+    console.log('got into requestOIDCSignIn');
+  }
+
+  @Get('oidc/cb')
+  async OIDCcb(@Req() req: Request): Promise<void> {
+    console.log('got into OIDCcb');
   }
 
   @Get('authorized')

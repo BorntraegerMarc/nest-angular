@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {Observable, of} from 'rxjs';
-import { IToken } from '../../../server/modules/auth/interfaces/token.interface';
+import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
 import 'rxjs/add/operator/mergeMap';
+import { IToken } from '../../../server/modules/auth/interfaces/token.interface';
 
 @Injectable()
 export class AuthService {
@@ -54,6 +54,10 @@ export class AuthService {
 
   googleSignIn(code: string): Observable<any> {
     return this.httpClient.post('api/auth/google/signin', { code });
+  }
+
+  oidcSignIn(): Observable<any> {
+    return this.httpClient.get('api/auth/oidc/signin', { observe: 'response', responseType: 'text' });
   }
 
   getProtected(): Observable<any> {

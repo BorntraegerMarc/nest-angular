@@ -9,7 +9,7 @@ const dev = env === 'development';
 
 // plugins
 const devPlugins = [
-  new NodemonPlugin(),
+  new NodemonPlugin({nodeArgs: [ '--inspect=0.0.0.0:9221' ]}),
   new webpack.HotModuleReplacementPlugin()
 ];
 const prodPlugins = [];
@@ -21,7 +21,7 @@ const entry = dev ? ['webpack/hot/poll?1000', './src/server/main.ts'] : './src/s
 module.exports = {
   entry,
   output: {
-    path: path.resolve(__dirname, "./bin"), 
+    path: path.resolve(__dirname, "./bin"),
     filename: "server.bundle.js"
   },
   plugins: plugins,
